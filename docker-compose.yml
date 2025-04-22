@@ -1,0 +1,31 @@
+services:
+
+  mongo-db:
+    container_name: clients-db_mongo
+    image: mongo:8.0
+    restart: always
+   # env_file: .env
+    environment:
+     # MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USER}
+      MONGO_INITDB_ROOT_USERNAME: admin
+     # MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MONGO_INITDB_ROOT_PASSWORD: adminPassword123
+     # MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      MONGO_INITDB_DATABASE: clients
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongoinit.js:/docker-entrypoint-initdb.d/mongoinit.js:ro
+
+
+  app:
+    build:
+      context: .
+      dockerfile: DockerfileDev
+    container_name: clients_app
+    depends_on:
+      - mongo-db
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev

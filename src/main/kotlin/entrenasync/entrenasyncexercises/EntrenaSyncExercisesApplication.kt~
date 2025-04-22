@@ -1,0 +1,11 @@
+package entrenasync.entrenasyncexercises
+
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+
+@SpringBootApplication
+class EntrenaSyncExercisesApplication
+
+fun main(args: Array<String>) {
+	runApplication<EntrenaSyncExercisesApplication>(*args)
+}
