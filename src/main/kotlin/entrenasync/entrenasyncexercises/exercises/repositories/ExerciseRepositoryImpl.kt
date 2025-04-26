@@ -11,9 +11,9 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
 
 @Service
-class ExerciseRepositoryCustomImpl(
+class ExerciseRepositoryImpl(
     private val mongoTemplate: MongoTemplate
-) : IExerciseRepositoryCustom {
+) : ExerciseRepositoryCustom {
 
     override fun findWithFilters(filter: ExerciseFilter, pageable: Pageable): Page<Exercise> {
         val criteriaList = mutableListOf<Criteria>()
@@ -43,15 +43,19 @@ class ExerciseRepositoryCustomImpl(
             criteriaList += Criteria.where("difficulty").`is`(it)
         }
 
-        val query = Query().apply {
-            if (criteriaList.isNotEmpty()) {
-                addCriteria(Criteria().andOperator(*criteriaList.toTypedArray()))
-            }
-            with(pageable)
+        // construye solo el filtro, sin paging ni sort
+        val baseQuery = Query().apply {
+            if (criteriaList.isNotEmpty()) addCriteria(Criteria().andOperator(*criteriaList.toTypedArray()))
         }
 
-        val total = mongoTemplate.count(query.skip(-1).limit(-1), Exercise::class.java)
-        val list = mongoTemplate.find(query, Exercise::class.java)
+        // para los datos: aplica pageable
+        val pageQuery = Query.of(baseQuery).with(pageable)
+        val list = mongoTemplate.find(pageQuery, Exercise::class.java)
+
+        // para el conteo: clona el filtro inicial y resetea skip/limit
+        val countQuery = Query.of(baseQuery).skip(-1).limit(-1)
+        val total = mongoTemplate.count(countQuery, Exercise::class.java)
+
         return PageImpl(list, pageable, total)
     }
 }

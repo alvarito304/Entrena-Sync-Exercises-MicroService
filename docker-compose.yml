@@ -1,7 +1,7 @@
 services:
 
   mongo-db:
-    container_name: clients-db_mongo
+    container_name: exercises-db-mongo
     image: mongo:8.0
     restart: always
    # env_file: .env
@@ -11,7 +11,7 @@ services:
      # MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
       MONGO_INITDB_ROOT_PASSWORD: adminPassword123
      # MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
-      MONGO_INITDB_DATABASE: clients
+      MONGO_INITDB_DATABASE: exercises
     ports:
       - 27017:27017
     volumes:
@@ -22,7 +22,7 @@ services:
     build:
       context: .
       dockerfile: DockerfileDev
-    container_name: clients_app
+    container_name: exercises_app
     depends_on:
       - mongo-db
     ports:
