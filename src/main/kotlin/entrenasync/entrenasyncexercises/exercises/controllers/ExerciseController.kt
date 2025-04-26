@@ -7,7 +7,7 @@ import entrenasync.entrenasyncexercises.exercises.dtos.ExerciseUpdateRequest
 import entrenasync.entrenasyncexercises.exercises.models.BodyPart
 import entrenasync.entrenasyncexercises.exercises.models.DifficultyLevel
 import entrenasync.entrenasyncexercises.exercises.models.MuscleGroup
-import entrenasync.entrenasyncexercises.exercises.services.IExerciseService
+import entrenasync.entrenasyncexercises.exercises.services.ExerciseService
 import org.bson.types.ObjectId
 
 import org.springframework.data.domain.Page
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/Exercises")
 class ExerciseController (
-    private val exerciseService : IExerciseService
+    private val exerciseService : ExerciseService
 ){
 
     @GetMapping

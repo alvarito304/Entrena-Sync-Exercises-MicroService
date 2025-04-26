@@ -5,6 +5,6 @@ import entrenasync.entrenasyncexercises.exercises.models.Exercise
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-interface IExerciseRepositoryCustom {
+interface ExerciseRepositoryCustom {
     fun findWithFilters(filter: ExerciseFilter, pageable: Pageable): Page<Exercise>
 }
