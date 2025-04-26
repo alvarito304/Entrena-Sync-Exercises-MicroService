@@ -4,12 +4,11 @@ import entrenasync.entrenasyncexercises.exercises.dtos.ExerciseCreateRequest
 import entrenasync.entrenasyncexercises.exercises.dtos.ExerciseFilter
 import entrenasync.entrenasyncexercises.exercises.dtos.ExerciseResponse
 import entrenasync.entrenasyncexercises.exercises.dtos.ExerciseUpdateRequest
-import entrenasync.entrenasyncexercises.exercises.exceptions.ExerciseException
 import entrenasync.entrenasyncexercises.exercises.exceptions.ExerciseNotDeleted
 import entrenasync.entrenasyncexercises.exercises.exceptions.ExerciseNotFound
 import entrenasync.entrenasyncexercises.exercises.mapper.toEntity
 import entrenasync.entrenasyncexercises.exercises.mapper.toResponse
-import entrenasync.entrenasyncexercises.exercises.repositories.IExerciseRepository
+import entrenasync.entrenasyncexercises.exercises.repositories.ExerciseRepository
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.CacheConfig
@@ -22,8 +21,8 @@ import org.springframework.stereotype.Service
 @Service
 @CacheConfig(cacheNames = ["exercises"])
 class ExerciseServiceImpl (
-    private val exerciseRepository : IExerciseRepository
-) : IExerciseService  {
+    private val exerciseRepository : ExerciseRepository
+) : ExerciseService  {
 
     private val log = LoggerFactory.getLogger(ExerciseServiceImpl::class.java)
 

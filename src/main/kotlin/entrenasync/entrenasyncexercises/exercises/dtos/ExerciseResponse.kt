@@ -1,5 +1,6 @@
 package entrenasync.entrenasyncexercises.exercises.dtos
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import entrenasync.entrenasyncexercises.exercises.models.BodyPart
 import entrenasync.entrenasyncexercises.exercises.models.DifficultyLevel
 import entrenasync.entrenasyncexercises.exercises.models.MuscleGroup
@@ -35,4 +36,9 @@ data class ExerciseResponse(
     var createdAt: LocalDateTime = LocalDateTime.now(),
     var updatedAt: LocalDateTime = LocalDateTime.now(),
 
-    )
+    ){
+    @JsonProperty("id")
+    fun get_id(): String {
+        return id.toHexString()
+    }
+}

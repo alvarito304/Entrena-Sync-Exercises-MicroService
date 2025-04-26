@@ -1,4 +1,4 @@
-package entrenasync.workoutsmicroservice.middleWare.exceptionHandler
+package entrenasync.entrenasyncexercises.exceptionHandler
 
 
 import org.springframework.http.HttpStatus
