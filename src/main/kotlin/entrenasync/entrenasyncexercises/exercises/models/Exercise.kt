@@ -7,6 +7,7 @@ import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import java.time.LocalDateTime
 import jakarta.validation.constraints.*
+import org.springframework.data.mongodb.core.index.Indexed
 
 @Document("Exercises")
 @TypeAlias("Exercises")
@@ -17,6 +18,8 @@ data class Exercise(
 
     @field:NotBlank(message = "Exercise name must not be empty")
     @field:Size(min = 3, max = 60, message = "Name must be between 3 and 60 characters")
+    // puede dar fallos
+    @Indexed(unique = true)
     var name: String,
 
     @field:Size(max = 500, message = "Description must not exceed 500 characters")
@@ -32,7 +35,7 @@ data class Exercise(
     var equipment: String? = null,
 
     @field:Min(value = 0, message = "Calories burned cannot be negative")
-    var caloriesBurned: Int? = null,
+    var caloriesBurned: Int,
 
     @field:NotNull(message = "You must set a difficulty level")
     var difficulty: DifficultyLevel = DifficultyLevel.BEGINNER,
@@ -51,11 +54,11 @@ data class Exercise(
 }
 
 enum class BodyPart {
-    HEAD, NECK, SHOULDERS, ARMS, CHEST, BACK, CORE, HIPS, LEGS, CALVES
+    NECK, SHOULDERS, ARMS, CHEST, BACK, CORE, HIPS, LEGS, CALVES
 }
 
 enum class MuscleGroup {
-    CHEST, BACK, LEGS, ARMS, SHOULDERS, CORE, FULL_BODY
+    CHEST, BACK, LEGS, ARMS, SHOULDERS, CORE, FULL_BODY, UPPER_BODY
 }
 
 enum class DifficultyLevel {
