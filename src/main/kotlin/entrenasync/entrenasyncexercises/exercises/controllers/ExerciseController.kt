@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/Exercises")
+@CrossOrigin(origins = ["http://localhost:4200"])
 class ExerciseController (
     private val exerciseService : ExerciseService
 ){
