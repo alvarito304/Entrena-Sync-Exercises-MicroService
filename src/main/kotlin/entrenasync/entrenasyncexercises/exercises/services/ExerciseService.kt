@@ -7,7 +7,9 @@ import entrenasync.entrenasyncexercises.exercises.dtos.ExerciseUpdateRequest
 import org.bson.types.ObjectId
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.stereotype.Service
 
+@Service
 interface ExerciseService {
     fun getExercises(exerciseFilter: ExerciseFilter, pageable: Pageable): Page<ExerciseResponse>
     fun getExerciseById(id: ObjectId) : ExerciseResponse

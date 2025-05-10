@@ -19,6 +19,15 @@ repositories {
 }
 
 dependencies {
+
+    // auth para subir videos a youtube
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    // https://mvnrepository.com/artifact/com.google.apis/google-api-services-youtube
+    implementation("com.google.apis:google-api-services-youtube:v3-rev222-1.25.0")
+    // https://mvnrepository.com/artifact/com.google.api-client/google-api-client
+    implementation("com.google.api-client:google-api-client:2.7.2")
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.34.0")
+
     // cache
     implementation("org.springframework.boot:spring-boot-starter-cache")
 
@@ -38,6 +47,7 @@ dependencies {
     //serialization
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+
 
 
     //test

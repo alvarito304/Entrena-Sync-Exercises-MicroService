@@ -8,6 +8,7 @@ import entrenasync.entrenasyncexercises.exercises.models.BodyPart
 import entrenasync.entrenasyncexercises.exercises.models.DifficultyLevel
 import entrenasync.entrenasyncexercises.exercises.models.MuscleGroup
 import entrenasync.entrenasyncexercises.exercises.services.ExerciseService
+import entrenasync.entrenasyncexercises.exercises.services.YoutubeUploadService
 import org.bson.types.ObjectId
 
 import org.springframework.data.domain.Page
@@ -19,14 +20,19 @@ import org.springframework.http.ResponseEntity
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/Exercises")
 @CrossOrigin(origins = ["http://localhost:4200"])
 class ExerciseController (
-    private val exerciseService : ExerciseService
+    private val exerciseService : ExerciseService,
+    private val youtubeUploadService : YoutubeUploadService
 ){
+    private val log = org.slf4j.LoggerFactory.getLogger(ExerciseController::class.java)
 
     @GetMapping
     fun getExercises(
@@ -109,6 +115,16 @@ class ExerciseController (
     fun deleteExercise(@PathVariable id: ObjectId): ResponseEntity<Void> {
         exerciseService.deleteExercise(id)
         return ResponseEntity.noContent().build()
+    }
+
+    @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun upload(
+        @RequestPart("file") file: MultipartFile,
+        auth: OAuth2AuthenticationToken
+    ): ResponseEntity<String> {
+        log.info("Subiendo video a YouTube")
+        val videoId = youtubeUploadService.uploadVideo(file, auth)
+        return ResponseEntity.ok(videoId)
     }
 
 
