@@ -82,6 +82,8 @@ class ExerciseController (
             headers.add(HttpHeaders.LINK, "<$prevUri>; rel=\"prev\"")
         }
 
+        headers.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Link")
+
         return ResponseEntity(pageResult, headers, HttpStatus.OK)
     }
 
