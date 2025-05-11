@@ -20,8 +20,7 @@ import org.springframework.http.ResponseEntity
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.data.domain.Sort;
-import org.springframework.http.MediaType
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
+
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -117,15 +116,22 @@ class ExerciseController (
         return ResponseEntity.noContent().build()
     }
 
-    @PostMapping("/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun upload(
+    @PostMapping("/upload")
+    fun uploadVideo(
         @RequestPart("file") file: MultipartFile,
-        auth: OAuth2AuthenticationToken
-    ): ResponseEntity<String> {
-        log.info("Subiendo video a YouTube")
-        val videoId = youtubeUploadService.uploadVideo(file, auth)
-        return ResponseEntity.ok(videoId)
+        @RequestHeader("Authorization") accessToken: String
+    ): ResponseEntity<Map<String, String>> {
+        return try {
+            val videoId = youtubeUploadService.uploadVideo(file, accessToken.replace("Bearer ", ""))
+            ResponseEntity.ok(mapOf(
+                "status" to "success",
+                "videoId" to videoId
+            ))
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body(mapOf(
+                "status" to "error",
+
+            ))
+        }
     }
-
-
 }

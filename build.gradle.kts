@@ -21,12 +21,13 @@ repositories {
 dependencies {
 
     // auth para subir videos a youtube
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    //implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     // https://mvnrepository.com/artifact/com.google.apis/google-api-services-youtube
-    implementation("com.google.apis:google-api-services-youtube:v3-rev222-1.25.0")
+    implementation("com.google.apis:google-api-services-youtube:v3-rev20250422-2.0.0")
     // https://mvnrepository.com/artifact/com.google.api-client/google-api-client
     implementation("com.google.api-client:google-api-client:2.7.2")
     implementation("com.google.auth:google-auth-library-oauth2-http:1.34.0")
+    //implementation("com.google.oauth-client:google-oauth-client:1.34.1")
 
     // cache
     implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -42,7 +43,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     //api rest
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web"){
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-security")
+    }
 
     //serialization
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
