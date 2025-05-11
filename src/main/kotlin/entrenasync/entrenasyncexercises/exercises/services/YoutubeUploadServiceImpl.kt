@@ -18,73 +18,57 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.util.*
 import com.google.api.client.http.HttpRequest
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 
 @Service
 class YoutubeUploadServiceImpl(
+    private val credentialProvider: YouTubeCredentialProvider
 ) : YoutubeUploadService {
-    private val jsonFactory = GsonFactory.getDefaultInstance()
-    private val httpTransport by lazy { GoogleNetHttpTransport.newTrustedTransport() }
-    private val log = LoggerFactory.getLogger(YoutubeUploadServiceImpl::class.java)
 
-    /**
-     * Sube un video a YouTube y devuelve el videoId.
-     */
+    private val log = LoggerFactory.getLogger(javaClass)
+
     @Throws(IOException::class)
-    override fun uploadVideo(file: MultipartFile,accessToken: String): String {
-        log.info("Starting YouTube upload process with auth: $accessToken")
+    override fun uploadVideo(file: MultipartFile): String {
+        log.info("Subiendo vídeo a YouTube…")
 
-        try {
-            // 1) Crear credenciales desde el token manual
-            val credentials = GoogleCredentials.create(AccessToken(accessToken, null))
-                .createScoped(listOf("https://www.googleapis.com/auth/youtube.upload"))
+        // 1) Obtén credenciales con gestión de refresh automático
+        val credential = credentialProvider.getCredential()
 
-            // 2) Construir cliente YouTube
-            val httpRequestInitializer = HttpRequestInitializer { request: HttpRequest ->
-                request.headers.authorization = "Bearer $accessToken"
-            }
+        // 2) Construye el cliente de YouTube
+        val youtube = YouTube.Builder(
+            NetHttpTransport(),
+            GsonFactory.getDefaultInstance(),
+            credential
+        )
+            .setApplicationName("entrena-sync-exercise-app")
+            .build()
 
-// Construir cliente YouTube y omitir HttpCredentialsAdapter
-            val youtube = YouTube.Builder(
-                NetHttpTransport(),
-                GsonFactory.getDefaultInstance(),
-                httpRequestInitializer
-            )
-                .setApplicationName("entrena-sync-exercise-app")
-                .build()
-
-            // 6) Metadata del video
-            val snippet = VideoSnippet().apply {
-                title = "Video ejercicio Entrena-Sync"
-                description = "Subido desde la aplicación Entrena-Sync"
-                tags = listOf("entrenamiento", "ejercicio", "fitness")
-            }
-
-            val status = VideoStatus().apply {
-                privacyStatus = "public"
-            }
-
-            val videoObject = Video().apply {
-                this.snippet = snippet
-                this.status = status
-            }
-
-            // 7) Contenido multimedia
-            val mediaContent = InputStreamContent(
-                file.contentType ?: "video/*",
-                file.inputStream
-            ).apply {
-                length = file.size
-            }
-
-            // 8) Llamada a videos.insert (parte snippet,status)
-            val insert = youtube.videos()
-                .insert(listOf("snippet", "status"), videoObject, mediaContent)
-            val response = insert.execute()
-            log.info("Video subido: ${response.id}")
-            return response.id
-        } catch (e: Exception) {
-            log.error("Error subiendo video: ${e.message}", e)
-            throw IOException("Error al subir video a YouTube: ${e.message}", e)
+        // 3) Prepara metadata
+        val snippet = VideoSnippet().apply {
+            title = "Video ejercicio Entrena-Sync"
+            description = "Subido desde la aplicación Entrena-Sync"
+            tags = listOf("entrenamiento", "ejercicio", "fitness")
         }
+        val status = VideoStatus().apply { privacyStatus = "public" }
+        val videoObject = Video().apply {
+            this.snippet = snippet
+            this.status = status
+        }
+
+        // 4) Contenido multimedia
+        val mediaContent = InputStreamContent(
+            file.contentType ?: "video/*",
+            file.inputStream
+        ).apply { length = file.size }
+
+        // 5) Llamada a la API (refresh automático si el token expiró)
+        val response = youtube.videos()
+            .insert(listOf("snippet", "status"), videoObject, mediaContent)
+            .execute()
+
+        log.info("Vídeo subido con ID: ${response.id}")
+        return response.id
     }
 }

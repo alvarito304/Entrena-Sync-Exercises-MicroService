@@ -119,10 +119,9 @@ class ExerciseController (
     @PostMapping("/upload")
     fun uploadVideo(
         @RequestPart("file") file: MultipartFile,
-        @RequestHeader("Authorization") accessToken: String
     ): ResponseEntity<Map<String, String>> {
         return try {
-            val videoId = youtubeUploadService.uploadVideo(file, accessToken.replace("Bearer ", ""))
+            val videoId = youtubeUploadService.uploadVideo(file)
             ResponseEntity.ok(mapOf(
                 "status" to "success",
                 "videoId" to videoId

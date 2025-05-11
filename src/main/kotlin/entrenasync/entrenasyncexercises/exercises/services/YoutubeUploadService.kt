@@ -5,5 +5,5 @@ import org.springframework.web.multipart.MultipartFile
 
 @Service
 interface YoutubeUploadService {
-    fun uploadVideo(file: MultipartFile, auth: String): String;
+    fun uploadVideo(file: MultipartFile): String;
 }

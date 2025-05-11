@@ -40,5 +40,5 @@ out/
 .kotlin
 
 docker-compose.yml
-
+mongoinit.js
 .env
