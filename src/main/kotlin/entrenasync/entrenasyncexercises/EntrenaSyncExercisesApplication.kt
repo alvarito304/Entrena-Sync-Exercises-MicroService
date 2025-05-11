@@ -8,7 +8,8 @@ import org.springframework.context.annotation.ComponentScan
 @SpringBootApplication
 @ComponentScan(basePackages = [
     "entrenasync.entrenasyncexercises.exercises.services",
-    "entrenasync.entrenasyncexercises.exercises.controllers"
+    "entrenasync.entrenasyncexercises.exercises.controllers",
+    "entrenasync.entrenasyncexercises",
 ])
 @EnableCaching
 class EntrenaSyncExercisesApplication
