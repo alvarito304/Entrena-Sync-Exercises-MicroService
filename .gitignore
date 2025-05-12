@@ -39,4 +39,6 @@ out/
 ### Kotlin ###
 .kotlin
 
+docker-compose.yml
+mongoinit.js
 .env

@@ -8,6 +8,7 @@ import entrenasync.entrenasyncexercises.exercises.models.BodyPart
 import entrenasync.entrenasyncexercises.exercises.models.DifficultyLevel
 import entrenasync.entrenasyncexercises.exercises.models.MuscleGroup
 import entrenasync.entrenasyncexercises.exercises.services.ExerciseService
+import entrenasync.entrenasyncexercises.exercises.services.YoutubeUploadService
 import org.bson.types.ObjectId
 
 import org.springframework.data.domain.Page
@@ -19,13 +20,16 @@ import org.springframework.http.ResponseEntity
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType
+
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/Exercises")
 @CrossOrigin(origins = ["http://localhost:4200"])
 class ExerciseController (
-    private val exerciseService : ExerciseService
+    private val exerciseService : ExerciseService,
 ){
 
     @GetMapping
@@ -93,16 +97,31 @@ class ExerciseController (
             .body(exerciseService.getExerciseById(id))
     }
 
-    @PostMapping
-    fun createExercise(@RequestBody exercise: ExerciseCreateRequest): ResponseEntity<ExerciseResponse> {
-        return ResponseEntity.ok()
-            .body(exerciseService.createExercise(exercise))
+    @PostMapping(
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun createExercise(
+        @RequestPart("exercise") exercise: ExerciseCreateRequest,
+        @RequestPart("file", required = false) file: MultipartFile?
+    ): ResponseEntity<ExerciseResponse> {
+        val created = exerciseService.createExercise(exercise, file)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(created)
     }
 
-    @PutMapping("/{id}")
-    fun updateExercise(@PathVariable id: ObjectId, @RequestBody exercise: ExerciseUpdateRequest): ResponseEntity<ExerciseResponse> {
-        return ResponseEntity.ok()
-            .body(exerciseService.updateExercise(id, exercise))
+    @PutMapping(
+        path = ["/{id}"],
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun updateExercise(
+        @PathVariable id: ObjectId,
+        @RequestPart("exercise") exercise: ExerciseUpdateRequest,
+        @RequestPart("file", required = false) file: MultipartFile?
+    ): ResponseEntity<ExerciseResponse> {
+        val updated = exerciseService.updateExercise(id, exercise, file)
+        return ResponseEntity.ok(updated)
     }
 
     @DeleteMapping("/{id}")
@@ -110,6 +129,4 @@ class ExerciseController (
         exerciseService.deleteExercise(id)
         return ResponseEntity.noContent().build()
     }
-
-
 }
