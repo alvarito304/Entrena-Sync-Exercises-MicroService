@@ -21,7 +21,6 @@ repositories {
 dependencies {
 
     // auth para subir videos a youtube
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     // https://mvnrepository.com/artifact/com.google.apis/google-api-services-youtube
     implementation("com.google.apis:google-api-services-youtube:v3-rev20250422-2.0.0")
     // https://mvnrepository.com/artifact/com.google.api-client/google-api-client

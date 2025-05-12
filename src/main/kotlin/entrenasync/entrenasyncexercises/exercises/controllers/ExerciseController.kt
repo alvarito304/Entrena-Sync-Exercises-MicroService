@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType
 
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -29,9 +30,7 @@ import org.springframework.web.multipart.MultipartFile
 @CrossOrigin(origins = ["http://localhost:4200"])
 class ExerciseController (
     private val exerciseService : ExerciseService,
-    private val youtubeUploadService : YoutubeUploadService
 ){
-    private val log = org.slf4j.LoggerFactory.getLogger(ExerciseController::class.java)
 
     @GetMapping
     fun getExercises(
@@ -98,39 +97,36 @@ class ExerciseController (
             .body(exerciseService.getExerciseById(id))
     }
 
-    @PostMapping
-    fun createExercise(@RequestBody exercise: ExerciseCreateRequest): ResponseEntity<ExerciseResponse> {
-        return ResponseEntity.ok()
-            .body(exerciseService.createExercise(exercise))
+    @PostMapping(
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun createExercise(
+        @RequestPart("exercise") exercise: ExerciseCreateRequest,
+        @RequestPart("file", required = false) file: MultipartFile?
+    ): ResponseEntity<ExerciseResponse> {
+        val created = exerciseService.createExercise(exercise, file)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(created)
     }
 
-    @PutMapping("/{id}")
-    fun updateExercise(@PathVariable id: ObjectId, @RequestBody exercise: ExerciseUpdateRequest): ResponseEntity<ExerciseResponse> {
-        return ResponseEntity.ok()
-            .body(exerciseService.updateExercise(id, exercise))
+    @PutMapping(
+        path = ["/{id}"],
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun updateExercise(
+        @PathVariable id: ObjectId,
+        @RequestPart("exercise") exercise: ExerciseUpdateRequest,
+        @RequestPart("file", required = false) file: MultipartFile?
+    ): ResponseEntity<ExerciseResponse> {
+        val updated = exerciseService.updateExercise(id, exercise, file)
+        return ResponseEntity.ok(updated)
     }
 
     @DeleteMapping("/{id}")
     fun deleteExercise(@PathVariable id: ObjectId): ResponseEntity<Void> {
         exerciseService.deleteExercise(id)
         return ResponseEntity.noContent().build()
-    }
-
-    @PostMapping("/upload")
-    fun uploadVideo(
-        @RequestPart("file") file: MultipartFile,
-    ): ResponseEntity<Map<String, String>> {
-        return try {
-            val videoId = youtubeUploadService.uploadVideo(file)
-            ResponseEntity.ok(mapOf(
-                "status" to "success",
-                "videoId" to videoId
-            ))
-        } catch (e: Exception) {
-            ResponseEntity.status(500).body(mapOf(
-                "status" to "error",
-
-            ))
-        }
     }
 }

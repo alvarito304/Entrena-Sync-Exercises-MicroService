@@ -17,11 +17,13 @@ import org.springframework.cache.annotation.CachePut
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 @CacheConfig(cacheNames = ["exercises"])
 class ExerciseServiceImpl (
-    private val exerciseRepository : ExerciseRepository
+    private val exerciseRepository : ExerciseRepository,
+    private val youtubeUploadServiceImpl: YoutubeUploadServiceImpl
 ) : ExerciseService  {
 
     private val log = LoggerFactory.getLogger(ExerciseServiceImpl::class.java)
@@ -39,17 +41,25 @@ class ExerciseServiceImpl (
     }
 
     @CachePut(key = "#result.id")
-    override fun createExercise(exercise: ExerciseCreateRequest): ExerciseResponse {
+    override fun createExercise(exercise: ExerciseCreateRequest, file: MultipartFile?): ExerciseResponse {
         log.info("Creating exercise")
+        if (file != null) {
+            exercise.videoUrl = youtubeUploadServiceImpl.uploadVideo(file)
+        }
         val newExercise = exerciseRepository.save(exercise.toEntity())
         return newExercise.toResponse()
     }
 
     @CachePut(key = "#id")
-    override fun updateExercise(id: ObjectId, exercise: ExerciseUpdateRequest): ExerciseResponse {
+    override fun updateExercise(id: ObjectId, exercise: ExerciseUpdateRequest, file: MultipartFile?): ExerciseResponse {
         log.info("Updating exercise with id $id")
         var oldExercise = exerciseRepository.findById(id).orElseThrow { ExerciseNotFound(id) }
         val updatedExercise = exercise.toEntity(oldExercise)
+        if (file != null) {
+            updatedExercise.videoUrl = youtubeUploadServiceImpl.uploadVideo(file)
+        } else {
+            updatedExercise.videoUrl = oldExercise.videoUrl
+        }
         return exerciseRepository.save(updatedExercise).toResponse()
     }
 
