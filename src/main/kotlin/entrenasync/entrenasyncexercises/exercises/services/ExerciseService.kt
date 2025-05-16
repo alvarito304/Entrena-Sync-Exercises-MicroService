@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile
 @Service
 interface ExerciseService {
     fun getExercises(exerciseFilter: ExerciseFilter, pageable: Pageable): Page<ExerciseResponse>
+    fun getAllExercises(): List<ExerciseResponse>
     fun getExerciseById(id: ObjectId) : ExerciseResponse
     fun createExercise(exercise: ExerciseCreateRequest, file: MultipartFile?) : ExerciseResponse
     fun updateExercise(id: ObjectId, exercise: ExerciseUpdateRequest, file: MultipartFile?): ExerciseResponse

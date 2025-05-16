@@ -34,6 +34,12 @@ class ExerciseServiceImpl (
         return exercises.map { exercise -> exercise.toResponse() }
     }
 
+    override fun getAllExercises(): List<ExerciseResponse> {
+        log.info("Getting All Exercises")
+        var exercises = exerciseRepository.findAll()
+        return exercises.map { exercise -> exercise.toResponse() }
+    }
+
     @CachePut(key = "#id")
     override fun getExerciseById(id: ObjectId): ExerciseResponse {
         log.info("Getting exercise with id $id")
