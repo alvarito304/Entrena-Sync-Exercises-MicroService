@@ -91,6 +91,12 @@ class ExerciseController (
         return ResponseEntity(pageResult, headers, HttpStatus.OK)
     }
 
+    @GetMapping("/all")
+    fun getAllExercises(): ResponseEntity<List<ExerciseResponse>> {
+        val exercises = exerciseService.getAllExercises()
+        return ResponseEntity.ok().body(exercises)
+    }
+
     @GetMapping("/{id}")
     fun getExerciseById(@PathVariable id: ObjectId): ResponseEntity<ExerciseResponse> {
         return ResponseEntity.ok()
