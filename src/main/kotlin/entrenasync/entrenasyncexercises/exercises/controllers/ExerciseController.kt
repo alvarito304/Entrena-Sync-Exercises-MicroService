@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/Exercises")
-@CrossOrigin(origins = ["http://localhost:4200"])
 class ExerciseController (
     private val exerciseService : ExerciseService,
 ){
