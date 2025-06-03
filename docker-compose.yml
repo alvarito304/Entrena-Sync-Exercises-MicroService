@@ -4,7 +4,7 @@ services:
     container_name: exercises-db-mongo
     image: mongo:8.0
     restart: always
-   # env_file: .env
+    env_file: .env
     environment:
      # MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USER}
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -12,6 +12,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: adminPassword123
      # MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
       MONGO_INITDB_DATABASE: exercises
+
     ports:
       - 27017:27017
     volumes:
@@ -29,3 +30,5 @@ services:
       - "8081:8080"
     environment:
       SPRING_PROFILES_ACTIVE: dev
+      GOOGLE_CLIENT_ID:
+      GOOGLE_CLIENT_SECRET:
