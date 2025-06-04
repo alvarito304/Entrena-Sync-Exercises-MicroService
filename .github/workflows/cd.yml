@@ -20,3 +20,4 @@ jobs:
 
       - name: Deploy con docker-compose (working-directory)
         run: sudo docker-compose -f Docker.Compose.yml --env-file .env.apigetaway up -d entrena-sync-exercises-microservice --build
+        #dummy
