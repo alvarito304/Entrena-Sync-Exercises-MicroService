@@ -22,5 +22,6 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar /app/my-app.jar
 
 EXPOSE 8080
+#dummy
 
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod","/app/my-app.jar"]
