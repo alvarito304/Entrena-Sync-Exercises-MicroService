@@ -19,5 +19,11 @@ jobs:
           sudo docker-compose -f ../../Docker.Compose.yml pull entrena-sync-exercises-microservice
 
       - name: Deploy con docker-compose (working-directory)
-        run: sudo docker-compose -f ../../Docker.Compose.yml --env-file ../../.env.apigetaway up -d entrena-sync-exercises-microservice --build
-        #dummy
+        run: sudo docker-compose -f ../../Docker.Compose.yml --env-file ../../.env.apigetaway -p entrena-sync up -d entrena-sync-exercises-microservice --build
+
+      - name: Clean up unused Docker images
+        run: |
+          sudo docker image prune -f
+          sudo docker container prune -f
+          sudo docker volume prune -f
+          sudo docker network prune -f
