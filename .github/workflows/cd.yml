@@ -14,9 +14,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Cd a la ruta de despliegue
-        run: cd /home/ec2-user/PROYECTOS/despliegue
-
       - name: Descargar última versión de la imagen
         run: |
           sudo docker-compose -f Docker.Compose.yml pull entrena-sync-exercises-microservice
