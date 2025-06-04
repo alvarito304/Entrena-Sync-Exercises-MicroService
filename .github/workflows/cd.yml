@@ -16,8 +16,8 @@ jobs:
 
       - name: Descargar última versión de la imagen
         run: |
-          sudo docker-compose -f Docker.Compose.yml pull entrena-sync-exercises-microservice
+          sudo docker-compose -f ../../Docker.Compose.yml pull entrena-sync-exercises-microservice
 
       - name: Deploy con docker-compose (working-directory)
-        run: sudo docker-compose -f Docker.Compose.yml --env-file .env.apigetaway up -d entrena-sync-exercises-microservice --build
+        run: sudo docker-compose -f ../../Docker.Compose.yml --env-file ../../.env.apigetaway up -d entrena-sync-exercises-microservice --build
         #dummy
